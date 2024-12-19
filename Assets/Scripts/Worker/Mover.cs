@@ -16,29 +16,47 @@ public class Mover : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
+    private void FixedUpdate()
+    {
+        if (_target != null)
+        {
+            Move();
+        }
+    }
+
     private void Update()
     {
         if (_target != null)
-            Move();
+        {
+            LookAtMoveDirection();
+
+            if (IsCame())
+                EndToMove();
+        }
     }
 
     public void MoveToTarget(Transform target)
     {
-        _target = target;
+        _target = target; 
     }
 
     private void Move()
     {
         _rigidbody.transform.position = Vector3.MoveTowards(transform.position,
             _target.position, _speed * Time.deltaTime);
+    }
 
-        if (IsCame())
-            EndToMove();
+    private void LookAtMoveDirection()
+    {
+        Vector3 correctPosition = 
+            new(_target.position.x, transform.position.y, _target.position.z);
+
+        transform.LookAt(correctPosition);
     }
 
     private bool IsCame()
     {
-        float distance = 0.5f;
+        float distance = 0.7f;
 
         return Vector3.Distance(transform.position, _target.position) < distance;
     }

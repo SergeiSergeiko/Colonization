@@ -4,10 +4,16 @@ public class Worker : MonoBehaviour
 {
     [SerializeField] private Mover _mover;
     [SerializeField] private float _resourceSelectionRadius;
+    [SerializeField] private Bag _bag;
 
-    private Transform _base;
+    private Base _base;
 
-    public bool IsBusy { get; private set; }
+    public bool IsBusy { get; private set; } = false;
+
+    public void Init(Base @base)
+    {
+        _base = @base;
+    }
 
     public void GoToGetResource(Transform resource)
     {
@@ -21,7 +27,7 @@ public class Worker : MonoBehaviour
         _mover.Came -= FindResourceAndTakeItBase;
 
         PickUpResource();
-        _mover.MoveToTarget(_base);
+        MoveToBase();
     }
 
     private void PickUpResource()
@@ -30,25 +36,23 @@ public class Worker : MonoBehaviour
             Physics.OverlapSphere(transform.position, _resourceSelectionRadius);
 
         foreach (Collider collider in colliders)
-            if (collider.TryGetComponent(out Resourse resource))
-                resource.transform.SetParent(transform);
+            if (collider.TryGetComponent(out Resource resource))
+                _bag.TakeResource(resource);
     }
 
     private void MoveToBase()
     {
-        _mover.MoveToTarget(_base);
+        _mover.MoveToTarget(_base.transform);
         _mover.Came += OnCameToBase;
     }
 
     private void OnCameToBase()
     {
         _mover.Came -= OnCameToBase;
-        IsBusy = false;
-    }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(transform.position, _resourceSelectionRadius);
+        if (_bag.TryGetResource(out Resource resource))
+            _base.TakeResource(resource);
+
+        IsBusy = false;
     }
 }
