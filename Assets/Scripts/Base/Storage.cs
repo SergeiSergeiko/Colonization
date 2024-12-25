@@ -6,8 +6,8 @@ public class Storage : MonoBehaviour
     private int _gold;
     private int _wood;
 
-    public Action<int> GoldChanged;
-    public Action<int> WoodChanged;
+    public event Action<int> GoldChanged;
+    public event Action<int> WoodChanged;
 
     public int Gold 
     {
@@ -35,24 +35,6 @@ public class Storage : MonoBehaviour
     {
         Gold = 10;
         Wood = 10;
-    }
-
-    public bool TryToPay(Price2Int price)
-    {
-        if (EnoughMoney(price))
-        {
-            Gold -= price.Gold;
-            Wood -= price.Wood;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool EnoughMoney(Price2Int price)
-    {
-        return Gold >= price.Gold && Wood >= price.Wood;
     }
 
     public void TakeResource(Resource resource)

@@ -8,16 +8,13 @@ public class Worker : MonoBehaviour
 
     private Base _base;
 
-    public bool IsBusy { get; private set; } = false;
-
     public void Init(Base @base)
     {
         _base = @base;
     }
 
-    public void GoToGetResource(Transform resource)
+    public void ExtractResource(Transform resource)
     {
-        IsBusy = true;
         _mover.MoveToTarget(resource);
         _mover.Came += FindResourceAndTakeItBase;
     }
@@ -36,8 +33,14 @@ public class Worker : MonoBehaviour
             Physics.OverlapSphere(transform.position, _resourceSelectionRadius);
 
         foreach (Collider collider in colliders)
+        {
             if (collider.TryGetComponent(out Resource resource))
+            {
                 _bag.TakeResource(resource);
+
+                break;
+            }
+        }
     }
 
     private void MoveToBase()
@@ -51,8 +54,12 @@ public class Worker : MonoBehaviour
         _mover.Came -= OnCameToBase;
 
         if (_bag.TryGetResource(out Resource resource))
-            _base.TakeResource(resource);
+            _base.TakeResource(this, resource);
+    }
 
-        IsBusy = false;
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _resourceSelectionRadius);
     }
 }

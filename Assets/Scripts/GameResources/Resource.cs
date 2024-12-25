@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Resource : MonoBehaviour
 {
-    public Action<Resource> Removed;
+    public event Action<Resource> Removed;
 
     [field: SerializeField] public int Value { get; private set; }
 

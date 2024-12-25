@@ -1,84 +1,68 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private Button _scanButton;
-    [SerializeField] private Button _buyWorkerButton;
     [SerializeField] private Scanner _scanner;
+    [SerializeField] private WorkersCoordinator _workersCoordinator;
     [SerializeField] private Storage _storage;
-    [SerializeField] private ShopWorkers _shopWorkers;
     [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private int _countStartWorkers;
 
     private List<Worker> _workers = new();
+    private List<Worker> _freeWorkers = new();
+
+    public int CountFreeWorkers => _freeWorkers.Count;
 
     private void OnEnable()
     {
-        _scanButton.onClick.AddListener(ScanOnGold);
-        _buyWorkerButton.onClick.AddListener(BuyWorker);
+        _scanner.ResourcesScanned += _workersCoordinator.StartWorking;
     }
 
     private void OnDisable()
     {
-        _scanButton.onClick.RemoveListener(ScanOnGold);
-        _buyWorkerButton.onClick.RemoveListener(BuyWorker);
+        _scanner.ResourcesScanned -= _workersCoordinator.StartWorking;
     }
 
     private void Start()
     {
-        for (int i = 0; i < _countStartWorkers; i++)
-            GetWorker(_shopWorkers.BuyWorker());
+        _scanner.EnableScan();
     }
 
-    public void TakeResource(Resource resource)
+    public void TakeResource(Worker worker, Resource resource)
     {
+        _freeWorkers.Add(worker);
         _storage.TakeResource(resource);
         resource.Remove();
     }
 
-    public void GetWorker(Worker worker)
+    public void AddWorker(Worker worker)
     {
         _workers.Add(worker);
+        _freeWorkers.Add(worker);
         worker.Init(this);
         worker.transform.position = GetSpawnPositionWithScatter();
     }
 
-    private void BuyWorker()
+    public bool TryGetFreeWorker(out Worker worker)
     {
-        if (_storage.TryToPay(_shopWorkers.Price))
+        worker = _freeWorkers.FirstOrDefault();
+
+        if (worker != null)
         {
-            Worker worker = _shopWorkers.BuyWorker();
-            GetWorker(worker);
+            _freeWorkers.Remove(worker);
+
+            return true;
         }
+
+        return false;
     }
 
     private Vector3 GetSpawnPositionWithScatter()
     {
-        int divider = 10;
-        float scatter = Random.value / divider;
+        float scatter = Random.value;
         Vector3 offSet = new(scatter, 0, scatter);
 
         return _spawnPoint.position + offSet;
-    }
-
-    private void ScanOnGold()
-    {
-        var goldPositions = _scanner.ScanOnGold();
-        SendWorking(goldPositions);
-    }
-
-    private void SendWorking(List<Transform> resources)
-    {
-        List<Worker> workers = _workers
-            .Where(worker => worker.IsBusy == false)
-            .ToList();
-
-        int count = Mathf.Min(resources.Count, workers.Count);
-
-        for (int i = 0; i < count; i++)
-            workers[i].GoToGetResource(resources[i]);
     }
 }

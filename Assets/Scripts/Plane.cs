@@ -1,15 +1,18 @@
 using UnityEngine;
 
+[RequireComponent (typeof(MeshRenderer))]
 public class Plane : MonoBehaviour
 {
     private Vector3 _planeSize;
+    private MeshRenderer _mesh;
 
     private void Awake()
     {
-        _planeSize = GetPlaneSize();
+        _mesh = GetComponent<MeshRenderer>();
+        _planeSize = GetSize();
     }
 
-    public Vector3 GetRandomPositionOnPlane()
+    public Vector3 GetRandomPosition()
     {
         float divider = 3f;
         float rangeX = _planeSize.x / divider;
@@ -24,11 +27,10 @@ public class Plane : MonoBehaviour
         return position;
     }
 
-    private Vector3 GetPlaneSize()
+    private Vector3 GetSize()
     {
-        Vector3 planeSize = Vector3.Scale(GetComponent<MeshRenderer>().bounds.size,
-            transform.localScale);
+        Vector3 size = Vector3.Scale(_mesh.bounds.size, transform.localScale);
 
-        return planeSize;
+        return size;
     }
 }

@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class CircleEffect : MonoBehaviour
+public class Effect : MonoBehaviour
 {
-    public Action<CircleEffect> Stoped;
+    public event Action<Effect> Stoped;
 
     private void OnParticleSystemStopped()
     {

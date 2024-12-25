@@ -56,7 +56,7 @@ public class Mover : MonoBehaviour
 
     private bool IsCame()
     {
-        float distance = 0.7f;
+        float distance = 0.5f;
 
         return Vector3.Distance(transform.position, _target.position) < distance;
     }

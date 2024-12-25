@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8317395431059726047}
   - component: {fileID: 2386048485325377798}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: OutlineEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3897,13 +3897,14 @@ ParticleSystem:
   TriggerModule:
     enabled: 0
     serializedVersion: 2
-    inside: 1
+    inside: 0
     outside: 0
-    enter: 0
-    exit: 0
-    colliderQueryMode: 0
+    enter: 2
+    exit: 2
+    colliderQueryMode: 2
     radiusScale: 1
-    primitives: []
+    primitives:
+    - {fileID: 466512954467996138, guid: 16bc1afff8aafbc4580fc5f5cd64bf6e, type: 3}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -4934,6 +4935,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2903157507993016872}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f331716306042ff479e8a94b6eb135d3, type: 3}
+  m_Script: {fileID: 11500000, guid: bfeaa0bcdf1982741a8ddf996b3a7484, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _color: {r: 1, g: 0.9840834, b: 0.28773582, a: 1}
