@@ -17,13 +17,11 @@ public class ResourceSpawner<T> : Spawner<Resource>
     {
         WaitForSeconds wait = new(_spawnTime);
 
-        yield return wait;
-
         while (_isSpawn)
         {
-            Spawn(_plane.GetRandomPosition());
-
             yield return wait;
+
+            Spawn(_plane.GetRandomPosition());
         }
     }
 
