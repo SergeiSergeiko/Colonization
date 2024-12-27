@@ -10,18 +10,15 @@ public class Base : MonoBehaviour
     [SerializeField] private Transform _spawnPoint;
 
     private List<Worker> _workers = new();
-    private List<Worker> _freeWorkers = new();
 
-    public int CountFreeWorkers => _freeWorkers.Count;
-
-    private void OnEnable()
+    private void Awake()
     {
-        _scanner.ResourcesScanned += _workersCoordinator.StartWorking;
+        _scanner.ResourcesScanned += StartMiningResources;
     }
 
     private void OnDisable()
     {
-        _scanner.ResourcesScanned -= _workersCoordinator.StartWorking;
+        _scanner.ResourcesScanned -= StartMiningResources;
     }
 
     private void Start()
@@ -31,7 +28,6 @@ public class Base : MonoBehaviour
 
     public void TakeResource(Worker worker, Resource resource)
     {
-        _freeWorkers.Add(worker);
         _storage.TakeResource(resource);
         resource.Remove();
     }
@@ -39,23 +35,13 @@ public class Base : MonoBehaviour
     public void AddWorker(Worker worker)
     {
         _workers.Add(worker);
-        _freeWorkers.Add(worker);
         worker.Init(this);
         worker.transform.position = GetSpawnPositionWithScatter();
     }
 
-    public bool TryGetFreeWorker(out Worker worker)
+    private void StartMiningResources(List<Transform> resources)
     {
-        worker = _freeWorkers.FirstOrDefault();
-
-        if (worker != null)
-        {
-            _freeWorkers.Remove(worker);
-
-            return true;
-        }
-
-        return false;
+        _workersCoordinator.StartWorking(resources, _workers);
     }
 
     private Vector3 GetSpawnPositionWithScatter()
