@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
     [SerializeField] private Vector3 _size;
     [SerializeField, Min(1f)] private float _delay;
-    [SerializeField] private ObjectPoolService _objectPoolService;
     [SerializeField] private ScannerEffectSpawner _scannerEffectSpawner;
+    [SerializeField] private OutlineEffectSpawner _outlineEffectSpawner;
 
     private Coroutine _scanning;
 
@@ -26,13 +27,11 @@ public class Scanner : MonoBehaviour
     {
         WaitForSeconds wait = new(_delay);
 
-        yield return wait;
-
         while (enabled)
         {
-            ScanOnResources();
-
             yield return wait;
+
+            ScanOnResources();
         }
     }
 
@@ -46,8 +45,10 @@ public class Scanner : MonoBehaviour
             if (collider.TryGetComponent(out Resource _))
                 foundResources.Add(collider.transform);
 
-        ResourcesScanned?.Invoke(foundResources);
+
+        _outlineEffectSpawner.Spawn(foundResources);
         _scannerEffectSpawner.Spawn(transform.position);
+        ResourcesScanned?.Invoke(foundResources);
     }
 
     private void OnDrawGizmos()
