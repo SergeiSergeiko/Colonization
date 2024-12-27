@@ -3,19 +3,7 @@ using UnityEngine;
 
 public class OutlineEffectSpawner : EffectSpawner<OutlineEffect>
 {
-    [SerializeField] private Scanner _scanner;
-
-    private void Awake()
-    {
-        _scanner.ResourcesScanned += OnResourcesScanned;
-    }
-
-    private void OnDisable()
-    {
-        _scanner.ResourcesScanned -= OnResourcesScanned;
-    }
-
-    private void OnResourcesScanned(List<Transform> resources)
+    public void Spawn(List<Transform> resources)
     {
         foreach (Transform resource in resources)
             Spawn(resource.position);
