@@ -1,13 +1,31 @@
 using UnityEngine;
 
-public abstract class Spawner<T> : MonoBehaviour
+public class Spawner<T> : MonoBehaviour where T : MonoBehaviour
 {
     [SerializeField] protected T Prefab;
-    [SerializeField] protected ObjectPoolService ObjectPoolService;
 
-    public abstract void Spawn(Vector3 position);
+    protected GameObjectPool<T> Pool;
 
-    protected abstract void Subscribe(T instance);
+    private void Awake()
+    {
+        Pool = new GameObjectPool<T>(Prefab);
+    }
 
-    protected abstract void Despawn(T instance);
+    public T Spawn(Vector3 position)
+    {
+        T obj = Pool.Get();
+        Subscribe(obj);
+        obj.transform.position = position;
+
+        return obj;
+    }
+
+    protected virtual void Subscribe(T obj) { }
+
+    protected virtual void Despawn(T obj) { }
+
+    protected void Realese(T obj)
+    {
+        Pool.Release(obj);
+    }
 }

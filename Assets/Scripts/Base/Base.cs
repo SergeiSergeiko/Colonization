@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Base : MonoBehaviour
@@ -10,6 +9,8 @@ public class Base : MonoBehaviour
     [SerializeField] private Transform _spawnPoint;
 
     private List<Worker> _workers = new();
+
+    public Vector3 SpawnPoint => _spawnPoint.position;
 
     private void Awake()
     {

@@ -6,8 +6,6 @@ public class ResourceSpawner<T> : Spawner<Resource>
     [SerializeField] private Plane _plane;
     [SerializeField] private float _spawnTime;
 
-    private bool _isSpawn = true;
-
     private void Start()
     {
         StartCoroutine(SpawnResourcePerTime());
@@ -17,19 +15,12 @@ public class ResourceSpawner<T> : Spawner<Resource>
     {
         WaitForSeconds wait = new(_spawnTime);
 
-        while (_isSpawn)
+        while (enabled)
         {
             yield return wait;
 
             Spawn(_plane.GetRandomPosition());
         }
-    }
-
-    public override void Spawn(Vector3 position)
-    {
-        Resource resource = ObjectPoolService.Spawn(Prefab);
-        Subscribe(resource);
-        resource.transform.position = position;
     }
 
     protected override void Subscribe(Resource resource)
@@ -40,6 +31,6 @@ public class ResourceSpawner<T> : Spawner<Resource>
     protected override void Despawn(Resource resource)
     {
         resource.Removed -= Despawn;
-        ObjectPoolService.Despawn(resource);
+        Realese(resource);
     }
 }

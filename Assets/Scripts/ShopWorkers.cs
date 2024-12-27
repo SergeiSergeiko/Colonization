@@ -3,10 +3,10 @@ using UnityEngine;
 public class ShopWorkers : MonoBehaviour
 {
     [SerializeField] private Worker _prefab;
-    [SerializeField] private ObjectPoolService _objectPoolService;
+    [SerializeField] private WorkerSpawner _workerSpawner;
 
-    public Worker BuyWorker()
+    public Worker BuyWorker(Vector3 position)
     {
-        return _objectPoolService.Spawn(_prefab);
+        return _workerSpawner.Spawn(position);
     }
 }
