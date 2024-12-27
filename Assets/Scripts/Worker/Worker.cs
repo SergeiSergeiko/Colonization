@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Worker : MonoBehaviour
@@ -8,6 +9,10 @@ public class Worker : MonoBehaviour
 
     private Base _base;
 
+    public event Action<Worker> Freed;
+
+    public bool IsBusy { get; private set; } = false;
+
     public void Init(Base @base)
     {
         _base = @base;
@@ -15,6 +20,7 @@ public class Worker : MonoBehaviour
 
     public void ExtractResource(Transform resource)
     {
+        IsBusy = true;
         _mover.MoveToTarget(resource);
         _mover.Came += FindResourceAndTakeItBase;
     }
@@ -55,6 +61,9 @@ public class Worker : MonoBehaviour
 
         if (_bag.TryGetResource(out Resource resource))
             _base.TakeResource(this, resource);
+
+        IsBusy = false;
+        Freed?.Invoke(this);
     }
 
     private void OnDrawGizmos()
