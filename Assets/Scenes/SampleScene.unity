@@ -215,7 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _base: {fileID: 846977234}
   _shopWorkers: {fileID: 1096638604}
-  _countStartWorkers: 3
+  _countWorkers: 3
 --- !u!1 &193770387
 GameObject:
   m_ObjectHideFlags: 0
@@ -1439,6 +1439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0f485b2ecf09a745a4a79862ff2d419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shopWorkers: {fileID: 0}
   _scanner: {fileID: 322844597}
   _workersCoordinator: {fileID: 1793419248}
   _storage: {fileID: 693308900}

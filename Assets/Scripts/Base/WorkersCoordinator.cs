@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class WorkersCoordinator : MonoBehaviour
 {
-    [SerializeField] private Base _base;
-
     private List<Worker> _workers = new();
     private List<Worker> _freeWorkers = new();
     private List<Worker> _busyWorkers = new();

@@ -39,6 +39,9 @@ public class Storage : MonoBehaviour
 
     public void TakeResource(Resource resource)
     {
+        if (resource.Value <= 0)
+            Debug.LogError($"{resource.name} value is less than or equal to 0");
+
         switch (resource)
         {
             case Gold gold:

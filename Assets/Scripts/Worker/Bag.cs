@@ -4,7 +4,7 @@ public class Bag : MonoBehaviour
 {
     public Resource Resource { get; private set; }
 
-    public bool TryGetResource(out Resource resource)
+    public bool TryGiveResource(out Resource resource)
     {
         if (Resource != null)
         {

@@ -31,20 +31,20 @@ public class GameObjectPool<T> where T : MonoBehaviour
         return Object.Instantiate(_prefab);
     }
 
-    private void OnGet(T instance)
+    private void OnGet(T obj)
     {
-        instance.transform.SetParent(null);
-        instance.gameObject.SetActive(true);
+        obj.transform.SetParent(null);
+        obj.gameObject.SetActive(true);
     }
 
-    private void OnRelease(T instance)
+    private void OnRelease(T obj)
     {
-        instance.transform.SetParent(_parent);
-        instance.gameObject.SetActive(false);
+        obj.transform.SetParent(_parent);
+        obj.gameObject.SetActive(false);
     }
 
-    private void OnDestroy(T instance)
+    private void OnDestroy(T obj)
     {
-        Object.Destroy(instance);
+        Object.Destroy(obj.gameObject);
     }
 }

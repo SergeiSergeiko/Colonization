@@ -5,7 +5,7 @@ public class Resource : MonoBehaviour
 {
     public event Action<Resource> Removed;
 
-    [field: SerializeField] public int Value { get; private set; }
+    [field: SerializeField, Min(1)] public int Value { get; private set; }
 
     public void Remove()
     {

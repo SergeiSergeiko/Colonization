@@ -19,9 +19,7 @@ public class Mover : MonoBehaviour
     private void FixedUpdate()
     {
         if (_target != null)
-        {
             Move();
-        }
     }
 
     private void Update()
@@ -57,8 +55,8 @@ public class Mover : MonoBehaviour
     private bool IsCame()
     {
         float distance = 0.5f;
-
-        return Vector3.Distance(transform.position, _target.position) < distance;
+        
+        return (_target.position - transform.position).sqrMagnitude < distance * distance;
     }
 
     private void EndToMove()

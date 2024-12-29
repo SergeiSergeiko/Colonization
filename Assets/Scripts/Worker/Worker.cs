@@ -22,12 +22,12 @@ public class Worker : MonoBehaviour
     {
         IsBusy = true;
         _mover.MoveToTarget(resource);
-        _mover.Came += FindResourceAndTakeItBase;
+        _mover.Came += OnCameToResource;
     }
 
-    private void FindResourceAndTakeItBase()
+    private void OnCameToResource()
     {
-        _mover.Came -= FindResourceAndTakeItBase;
+        _mover.Came -= OnCameToResource;
 
         PickUpResource();
         MoveToBase();
@@ -59,7 +59,7 @@ public class Worker : MonoBehaviour
     {
         _mover.Came -= OnCameToBase;
 
-        if (_bag.TryGetResource(out Resource resource))
+        if (_bag.TryGiveResource(out Resource resource))
             _base.TakeResource(this, resource);
 
         IsBusy = false;
