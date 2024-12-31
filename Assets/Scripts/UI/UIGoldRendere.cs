@@ -9,4 +9,9 @@ public class UIGoldRenderer : UIResourceRenderer
     {
         Storage.GoldChanged -= RefreshText;
     }
+
+    protected override void RefreshText()
+    {
+        Text.text = Storage.Gold.ToString();
+    }
 }

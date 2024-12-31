@@ -9,4 +9,9 @@ public class UIWoodRenderer : UIResourceRenderer
     {
         Storage.WoodChanged -= RefreshText;
     }
+
+    protected override void RefreshText()
+    {
+        Text.text = Storage.Wood.ToString();
+    }
 }
