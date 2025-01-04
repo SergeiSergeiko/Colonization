@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class ResourceSpawner<T> : Spawner<Resource>
+public class ResourceSpawner : Spawner<Resource>
 {
     [SerializeField] private Plane _plane;
     [SerializeField] private float _spawnTime;

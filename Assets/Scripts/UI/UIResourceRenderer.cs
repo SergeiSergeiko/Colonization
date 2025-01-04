@@ -6,5 +6,18 @@ public class UIResourceRenderer : MonoBehaviour
     [SerializeField] protected TMP_Text Text;
     [SerializeField] protected Storage Storage;
 
-    protected virtual void RefreshText() { }
+    private void OnEnable()
+    {
+        Storage.QuantityChanged += RefreshText;
+    }
+
+    private void OnDisable()
+    {
+        Storage.QuantityChanged -= RefreshText;
+    }
+
+    protected virtual void RefreshText()
+    {
+        Text.text = Storage.Resources.ToString();
+    }
 }
