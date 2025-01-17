@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a421cffaf0faad468fc6b4c895faab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 6
+  _speed: 4
 --- !u!114 &941568540626843364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,3 +210,4 @@ MonoBehaviour:
   _mover: {fileID: 4792636206807123965}
   _resourceSelectionRadius: 0.6
   _bag: {fileID: 5193327396443009064}
+  _prefab: {fileID: 945551686121714561, guid: 905c61a0e84c6f84aa476e185ce0b7d4, type: 3}
