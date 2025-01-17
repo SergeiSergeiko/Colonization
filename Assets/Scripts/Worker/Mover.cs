@@ -7,7 +7,8 @@ public class Mover : MonoBehaviour
     [SerializeField] private float _speed;
 
     private Rigidbody _rigidbody;
-    private Transform _target;
+    private Vector3 _target;
+    private bool _hasTarget;
 
     public event Action Came;
 
@@ -18,13 +19,13 @@ public class Mover : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_target != null)
+        if (_hasTarget)
             Move();
     }
 
     private void Update()
     {
-        if (_target != null)
+        if (_hasTarget)
         {
             LookAtMoveDirection();
 
@@ -33,21 +34,21 @@ public class Mover : MonoBehaviour
         }
     }
 
-    public void MoveToTarget(Transform target)
+    public void MoveToTarget(Vector3 target)
     {
-        _target = target; 
+        _target = target;
+        _hasTarget = true;
     }
 
     private void Move()
     {
         _rigidbody.transform.position = Vector3.MoveTowards(transform.position,
-            _target.position, _speed * Time.deltaTime);
+            _target, _speed * Time.deltaTime);
     }
 
     private void LookAtMoveDirection()
     {
-        Vector3 correctPosition = 
-            new(_target.position.x, transform.position.y, _target.position.z);
+        Vector3 correctPosition = new(_target.x, transform.position.y, _target.z);
 
         transform.LookAt(correctPosition);
     }
@@ -56,12 +57,12 @@ public class Mover : MonoBehaviour
     {
         float distance = 0.5f;
         
-        return (_target.position - transform.position).sqrMagnitude < distance * distance;
+        return (_target - transform.position).sqrMagnitude < distance * distance;
     }
 
     private void EndToMove()
     {
-        _target = null;
+        _hasTarget = false;
         Came?.Invoke();
     }
 }

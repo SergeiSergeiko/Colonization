@@ -20,6 +20,9 @@ public class Bag : MonoBehaviour
 
     public void TakeResource(Resource resource)
     {
+        if (resource == null)
+            Debug.LogError($"{resource.name} has null");
+
         Resource = resource;
         resource.transform.SetParent(transform);
     }

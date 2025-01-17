@@ -4,54 +4,84 @@ using UnityEngine;
 public class Worker : MonoBehaviour
 {
     [SerializeField] private Mover _mover;
-    [SerializeField] private float _resourceSelectionRadius;
     [SerializeField] private Bag _bag;
+    [SerializeField] private Base _prefab;
+    [SerializeField] private float _resourceSelectionRadius;
 
+    private PickUper _pickUper = new();
+    private Builder _builder;
     private Base _base;
+    private bool _isBusy;
 
     public event Action<Worker> Freed;
 
-    public bool IsBusy { get; private set; } = false;
-
-    public void Init(Base @base)
+    public bool IsBusy
     {
-        _base = @base;
+        get
+        {
+            return _isBusy;
+        }
+
+        private set
+        {
+            _isBusy = value;
+
+            if (_isBusy == false)
+                Freed?.Invoke(this);
+        }
     }
 
-    public void ExtractResource(Transform resource)
+    public void Init(Base @base, Builder builder)
+    {
+        _base = @base;
+        _builder = builder;
+
+        IsBusy = false;
+    }
+
+    public void BuildBase(Vector3 position)
     {
         IsBusy = true;
-        _mover.MoveToTarget(resource);
+        _mover.MoveToTarget(position);
+        _mover.Came += OnCameBuildBase;
+    }
+
+    public void ExtractResource(Vector3 position)
+    {
+        IsBusy = true;
+        _mover.MoveToTarget(position);
         _mover.Came += OnCameToResource;
+    }
+
+    private void OnCameBuildBase()
+    {
+        _mover.Came -= OnCameBuildBase;
+
+        Base @base = _builder.Build(_prefab, transform.position) as Base;
+        @base.Init(_builder);
+
+        RemoveYourselfFromBase();
+        ReInit(@base);
+        @base.AddWorker(this);
+
+        IsBusy = false;
     }
 
     private void OnCameToResource()
     {
         _mover.Came -= OnCameToResource;
 
-        PickUpResource();
+        Resource resource =
+            _pickUper.PickUpResource(transform.position, _resourceSelectionRadius);
+        if (resource != null)
+            _bag.TakeResource(resource);
+
         MoveToBase();
-    }
-
-    private void PickUpResource()
-    {
-        Collider[] colliders =
-            Physics.OverlapSphere(transform.position, _resourceSelectionRadius);
-
-        foreach (Collider collider in colliders)
-        {
-            if (collider.TryGetComponent(out Resource resource))
-            {
-                _bag.TakeResource(resource);
-
-                break;
-            }
-        }
     }
 
     private void MoveToBase()
     {
-        _mover.MoveToTarget(_base.transform);
+        _mover.MoveToTarget(_base.transform.position);
         _mover.Came += OnCameToBase;
     }
 
@@ -60,10 +90,20 @@ public class Worker : MonoBehaviour
         _mover.Came -= OnCameToBase;
 
         if (_bag.TryGiveResource(out Resource resource))
-            _base.TakeResource(this, resource);
+            _base.TakeResource(resource);
 
         IsBusy = false;
         Freed?.Invoke(this);
+    }
+
+    private void ReInit(Base @base)
+    {
+        Init(@base, _builder);
+    }
+
+    private void RemoveYourselfFromBase()
+    {
+        _base.RemoveWorker(this);
     }
 
     private void OnDrawGizmos()
