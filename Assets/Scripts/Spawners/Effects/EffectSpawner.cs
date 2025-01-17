@@ -1,5 +1,10 @@
 public class EffectSpawner<T> : Spawner<Effect> where T : Effect
 {
+    public EffectSpawner(Effect prefab) : base(prefab)
+    {
+        Prefab = prefab;
+    }
+
     protected override void Subscribe(Effect effect)
     {
         effect.Stoped += Despawn;

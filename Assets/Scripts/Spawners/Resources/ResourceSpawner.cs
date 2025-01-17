@@ -3,19 +3,20 @@ using UnityEngine;
 
 public class ResourceSpawner : Spawner<Resource>
 {
-    [SerializeField] private Plane _plane;
-    [SerializeField] private float _spawnTime;
+    private Plane _plane;
+    private bool _isWorking = true;
 
-    private void Start()
+    public ResourceSpawner(Resource prefab, Plane plane) : base(prefab)
     {
-        StartCoroutine(SpawnResourcePerTime());
+        Prefab = prefab;
+        _plane = plane;
     }
 
-    private IEnumerator SpawnResourcePerTime()
+    public IEnumerator SpawnResourcePerTime(float spawnTime)
     {
-        WaitForSeconds wait = new(_spawnTime);
+        WaitForSeconds wait = new(spawnTime);
 
-        while (enabled)
+        while (_isWorking)
         {
             yield return wait;
 

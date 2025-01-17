@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class Spawner<T> : MonoBehaviour where T : MonoBehaviour
+public class Spawner<T> where T : MonoBehaviour
 {
-    [SerializeField] protected T Prefab;
-
+    protected T Prefab;
     protected GameObjectPool<T> Pool;
 
-    private void Awake()
+    public Spawner(T prefab)
     {
+        Prefab = prefab;
         Pool = new GameObjectPool<T>(Prefab);
     }
 

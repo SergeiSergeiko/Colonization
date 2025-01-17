@@ -3,38 +3,25 @@ using UnityEngine;
 
 public class Storage : MonoBehaviour
 {
-    private int _gold;
-    private int _wood;
+    private int _resources;
 
-    public event Action<int> GoldChanged;
-    public event Action<int> WoodChanged;
+    public event Action ResourceReceived;
+    public event Action QuantityChanged;
 
-    public int Gold 
+    public int Resources 
     {
-        get => _gold;
+        get => _resources;
 
         private set
         {
-            _gold = value;
-            GoldChanged?.Invoke(_gold);
-        }
-    }
-
-    public int Wood 
-    {
-        get => _wood;
-
-        private set
-        {
-            _wood = value;
-            WoodChanged?.Invoke(_wood);
+            _resources = Math.Clamp(value, 0, int.MaxValue);
+            QuantityChanged?.Invoke();
         }
     }
 
     private void Start()
     {
-        Gold = 10;
-        Wood = 10;
+        Resources = 0;
     }
 
     public void TakeResource(Resource resource)
@@ -42,19 +29,12 @@ public class Storage : MonoBehaviour
         if (resource.Value <= 0)
             Debug.LogError($"{resource.name} value is less than or equal to 0");
 
-        switch (resource)
-        {
-            case Gold gold:
-                Gold += gold.Value;
-                break;
+        Resources += resource.Value;
+        ResourceReceived?.Invoke();
+    }
 
-            case Wood wood:
-                Wood += wood.Value;
-                break;
-
-            default:
-                Debug.LogError("Resource is not one of the types");
-                break;
-        }
+    public void TakeAwayResources(int amount)
+    {
+        Resources -= amount;
     }
 }
