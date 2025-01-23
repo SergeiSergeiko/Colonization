@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class MouseInput : MonoBehaviour
 {
-    private const int LeftMouseButton = 0;
+    private const int NumberButton = 0;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(LeftMouseButton))
+        if (Input.GetMouseButtonDown(NumberButton))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

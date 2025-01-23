@@ -52,9 +52,9 @@ public class Builder : MonoBehaviour
         {
             _building.transform.position = hit.point;
 
-            if (hit.transform.TryGetComponent(out Plane _))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (hit.transform.TryGetComponent(out Plane _))
                 {
                     BuildingPlaced?.Invoke(_building);
                     _building = null;
