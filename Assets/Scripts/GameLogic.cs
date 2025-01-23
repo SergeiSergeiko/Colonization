@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class GameLogic : MonoBehaviour
 {
+    [Header("Components")]
     [SerializeField] private Builder _builder;
+    [SerializeField] private Scanner _scanner;
 
     [Header("Resource")]
     [SerializeField] private Plane _plane;
@@ -12,6 +14,7 @@ public class GameLogic : MonoBehaviour
     [Header("Base")]
     [SerializeField] private Transform _baseSpawnPoint;
     [SerializeField] private Base _basePrefab;
+    [SerializeField] private int _startAmountWorkers;
 
     [Header("Resources Spawning Time")]
     [SerializeField] private float _spawningTime;
@@ -26,12 +29,13 @@ public class GameLogic : MonoBehaviour
 
     private void Start()
     {
+        _scanner.EnableScan();
         StartCoroutine(
             _resourceSpawner.SpawnResourcePerTime(_spawningTime), _resourceSpawning);
 
         Building building = _builder.Build(_basePrefab, _baseSpawnPoint.position);
         if (building is Base @base)
-            @base.Init(_builder);
+            @base.Init(_builder, _scanner, _startAmountWorkers);
         else
             Debug.LogError("building - is not a Base");
     }
