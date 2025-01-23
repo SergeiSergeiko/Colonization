@@ -21,7 +21,7 @@ public class WorkersCoordinator : MonoBehaviour
 
     public void RemoveWorker(Worker worker) => _workers.Remove(worker);
 
-    public void MiningResources(List<Transform> resources)
+    public void MiningResources(List<Vector3> resources)
     {
         if (_miningWorking != null)
         {

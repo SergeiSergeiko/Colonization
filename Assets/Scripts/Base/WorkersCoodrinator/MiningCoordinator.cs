@@ -6,14 +6,14 @@ public class MiningCoordinator
 {
     private List<Worker> _freeWorkers = new();
     private List<Worker> _busyWorkers = new();
-    private List<Transform> _foundResources = new();
+    private List<Vector3> _foundResources = new();
 
     public void EndWork()
     {
         _busyWorkers.ForEach(worker => worker.Freed -= OnWorkerFreed);
     }
 
-    public IEnumerator Working(List<Transform> resources, List<Worker> workers)
+    public IEnumerator Working(List<Vector3> resources, List<Worker> workers)
     {
         WaitUntil waitFreeWorker = new(() => _freeWorkers.Count > 0);
 
@@ -36,7 +36,7 @@ public class MiningCoordinator
         EndWork();
     }
 
-    private void Init(List<Transform> resources, List<Worker> workers)
+    private void Init(List<Vector3> resources, List<Worker> workers)
     {
         _foundResources = resources;
         _freeWorkers.Clear();
@@ -57,9 +57,9 @@ public class MiningCoordinator
         }
     }
 
-    private void SendWorker(Worker worker, Transform resource)
+    private void SendWorker(Worker worker, Vector3 resource)
     {
-        worker.ExtractResource(resource.position);
+        worker.ExtractResource(resource);
         worker.Freed += OnWorkerFreed;
 
         _busyWorkers.Add(worker);
