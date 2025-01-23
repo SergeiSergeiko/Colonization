@@ -4,7 +4,6 @@ using UnityEngine;
 public class Base : Building
 {
     [Header("Components")]
-    [SerializeField] private Scanner _scanner;
     [SerializeField] private WorkersCoordinator _workersCoordinator;
     [SerializeField] private Storage _storage;
 
@@ -15,11 +14,13 @@ public class Base : Building
     [Header("Settings")]
     [SerializeField] private int _buyWorkerPerResource;
     [SerializeField] private int _resourcesOnNewBase;
-    [SerializeField] private int _startAmountWorkers;
     [SerializeField] private int _minAmountWorkersForBuildNewBase;
+    [SerializeField] private float _resourceExtractionRadius;
 
     private Builder _builder;
+    private Scanner _scanner;
     private WorkerSpawner _workerSpawner;
+
     private List<Worker> _workers = new();
     private Counter _counter;
     private Flag _flag;
@@ -31,7 +32,6 @@ public class Base : Building
         _counter = new Counter(_buyWorkerPerResource);
         _workerSpawner = new(_workerPrefab);
 
-        _scanner.ResourcesScanned += StartMiningResources;
         _storage.ResourceReceived += OnResourceReceived;
 
         SetMiningMode();
@@ -45,17 +45,15 @@ public class Base : Building
         ResetModes();
     }
 
-    private void Start()
-    {
-        _scanner.EnableScan();
-
-        for (int i = 0; i < _startAmountWorkers; i++)
-            AddWorker(_workerSpawner.Spawn(SpawnPoint));
-    }
-
-    public void Init(Builder builder)
+    public void Init(Builder builder, Scanner scanner, int startAmountWorkers = 0)
     {
         _builder = builder;
+        _scanner = scanner;
+
+        _scanner.ResourcesScanned += StartMiningResources;
+
+        for (int i = 0; i < startAmountWorkers; i++)
+            AddWorker(_workerSpawner.Spawn(SpawnPoint));
     }
 
     public void StartSetFlag()
@@ -82,7 +80,7 @@ public class Base : Building
         _workers.Add(worker);
         _workersCoordinator.AddWorker(worker);
 
-        worker.Init(this, _builder);
+        worker.Init(this, _builder, _scanner);
     }
 
     public void RemoveWorker(Worker worker)
@@ -132,8 +130,10 @@ public class Base : Building
         _storage.TakeAwayResources(_buyWorkerPerResource);
     }
 
-    private void StartMiningResources(List<Transform> resources)
+    private void StartMiningResources()
     {
+        List<Vector3> resources = 
+            _scanner.GiveResourcesNearby(transform.position, _resourceExtractionRadius);
         _workersCoordinator.MiningResources(resources);
     }
 
@@ -166,5 +166,11 @@ public class Base : Building
         Vector3 offSet = new(scatter, height, scatter);
 
         return transform.position + offSet;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _resourceExtractionRadius);
     }
 }
