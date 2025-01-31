@@ -58,9 +58,8 @@ public class Builder : MonoBehaviour
     private void PlaceBuilding()
     {
         var ray = _camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             _building.transform.position = hit.point;
 

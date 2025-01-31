@@ -30,20 +30,35 @@ public class GameLogic : MonoBehaviour
 
     private void Start()
     {
-        _scanner.EnableScan();
-        StartCoroutine(
-            _resourceSpawner.SpawnResourcePerTime(_spawningTime), _resourceSpawning);
-
-        Building building = _builder.Build(_basePrefab, _baseSpawnPoint.position);
-        if (building is Base @base)
-            @base.Init(_builder, _scanner, _mouseInput, _startAmountWorkers);
-        else
-            Debug.LogError("building - is not a Base");
+        ActivateScan();
+        StartResourceSpawner();
+        InstallBase();
     }
 
     private void OnDisable()
     {
         StopCoroutine(_resourceSpawning);
+    }
+    
+    private void ActivateScan()
+    {
+        _scanner.EnableScan();
+    }
+
+    private void StartResourceSpawner()
+    {
+        StartCoroutine(
+            _resourceSpawner.SpawnResourcePerTime(_spawningTime), _resourceSpawning);
+    }
+
+    private void InstallBase()
+    {
+        Building building = _builder.Build(_basePrefab, _baseSpawnPoint.position);
+
+        if (building is Base @base)
+            @base.Init(_builder, _scanner, _mouseInput, _startAmountWorkers);
+        else
+            Debug.LogError("building - is not a Base");
     }
 
     private void StartCoroutine(IEnumerator routine, Coroutine coroutine)
