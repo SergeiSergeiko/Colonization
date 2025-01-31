@@ -15,10 +15,15 @@ public class Effect : MonoBehaviour
 
     public void SetSizeScannerEffect(float size)
     {
-        if (_particleSystem == null)
-            _particleSystem = GetComponent<ParticleSystem>();
+        Init();
 
         ParticleSystem.MainModule main = _particleSystem.main;
         main.startSize = size;
+    }
+
+    private void Init()
+    {
+        if (_particleSystem == null)
+            _particleSystem = GetComponent<ParticleSystem>();
     }
 }

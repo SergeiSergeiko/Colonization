@@ -11,6 +11,7 @@ public class Worker : MonoBehaviour
     private PickUper _pickUper = new();
     private Builder _builder;
     private Scanner _scanner;
+    private MouseInput _mouseInput;
     private Base _base;
     private bool _isBusy;
 
@@ -32,11 +33,12 @@ public class Worker : MonoBehaviour
         }
     }
 
-    public void Init(Base @base, Builder builder, Scanner scanner)
+    public void Init(Base @base, Builder builder, Scanner scanner, MouseInput mouseInput)
     {
         _base = @base;
         _builder = builder;
         _scanner = scanner;
+        _mouseInput = mouseInput;
 
         IsBusy = false;
     }
@@ -60,7 +62,7 @@ public class Worker : MonoBehaviour
         _mover.Came -= OnCameBuildBase;
 
         Base @base = _builder.Build(_prefab, transform.position) as Base;
-        @base.Init(_builder, _scanner);
+        @base.Init(_builder, _scanner, _mouseInput);
 
         RemoveYourselfFromBase();
         ReInit(@base);
@@ -100,7 +102,7 @@ public class Worker : MonoBehaviour
 
     private void ReInit(Base @base)
     {
-        Init(@base, _builder, _scanner);
+        Init(@base, _builder, _scanner, _mouseInput);
     }
 
     private void RemoveYourselfFromBase()

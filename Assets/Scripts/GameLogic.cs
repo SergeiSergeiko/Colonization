@@ -6,6 +6,7 @@ public class GameLogic : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Builder _builder;
     [SerializeField] private Scanner _scanner;
+    [SerializeField] private MouseInput _mouseInput;
 
     [Header("Resource")]
     [SerializeField] private Plane _plane;
@@ -35,7 +36,7 @@ public class GameLogic : MonoBehaviour
 
         Building building = _builder.Build(_basePrefab, _baseSpawnPoint.position);
         if (building is Base @base)
-            @base.Init(_builder, _scanner, _startAmountWorkers);
+            @base.Init(_builder, _scanner, _mouseInput, _startAmountWorkers);
         else
             Debug.LogError("building - is not a Base");
     }

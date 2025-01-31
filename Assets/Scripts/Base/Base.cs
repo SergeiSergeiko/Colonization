@@ -19,6 +19,7 @@ public class Base : Building
 
     private Builder _builder;
     private Scanner _scanner;
+    private MouseInput _mouseInput;
     private WorkerSpawner _workerSpawner;
 
     private List<Worker> _workers = new();
@@ -39,18 +40,21 @@ public class Base : Building
 
     private void OnDisable()
     {
+        _mouseInput.LeftMouseButtonClicked -= OnLMBClicked;
         _scanner.ResourcesScanned -= StartMiningResources;
         _storage.ResourceReceived -= OnResourceReceived;
         
         ResetModes();
     }
 
-    public void Init(Builder builder, Scanner scanner, int startAmountWorkers = 0)
+    public void Init(Builder builder, Scanner scanner, MouseInput mouseInput, int startAmountWorkers = 0)
     {
         _builder = builder;
         _scanner = scanner;
+        _mouseInput = mouseInput;
 
         _scanner.ResourcesScanned += StartMiningResources;
+        _mouseInput.LeftMouseButtonClicked += OnLMBClicked;
 
         for (int i = 0; i < startAmountWorkers; i++)
             AddWorker(_workerSpawner.Spawn(SpawnPoint));
@@ -80,7 +84,7 @@ public class Base : Building
         _workers.Add(worker);
         _workersCoordinator.AddWorker(worker);
 
-        worker.Init(this, _builder, _scanner);
+        worker.Init(this, _builder, _scanner, _mouseInput);
     }
 
     public void RemoveWorker(Worker worker)
@@ -142,7 +146,7 @@ public class Base : Building
         ResetModes();
 
         _counter.CountReached += BuyWorker;
-        _counter.SetMarkNumber(_buyWorkerPerResource);
+        _counter.SetTargetNumber(_buyWorkerPerResource);
     }
 
     private void SetBaseBuildMode()
@@ -150,7 +154,7 @@ public class Base : Building
         ResetModes();
 
         _counter.CountReached += BuildNewBase;
-        _counter.SetMarkNumber(_resourcesOnNewBase);
+        _counter.SetTargetNumber(_resourcesOnNewBase);
     }
 
     private void ResetModes()
@@ -166,6 +170,12 @@ public class Base : Building
         Vector3 offSet = new(scatter, height, scatter);
 
         return transform.position + offSet;
+    }
+
+    private void OnLMBClicked(RaycastHit hit)
+    {
+        if (hit.transform.TryGetComponent(out Base @base))
+            @base.StartSetFlag();
     }
 
     private void OnDrawGizmos()

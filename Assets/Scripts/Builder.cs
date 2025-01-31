@@ -1,18 +1,30 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Builder : MonoBehaviour
 {
+    [SerializeField] private MouseInput _mouseInput;
+
     private Building _building;
     private Camera _camera;
     private bool _isMovingBuilding;
     private Vector3 _positionBuilding;
+
+    private RaycastHit _hit;
+    private bool _isLMBClicked = false;
 
     public event Action<Building> BuildingPlaced;
 
     private void Awake()
     {
         _camera = Camera.main;
+        _mouseInput.LeftMouseButtonClicked += OnLMBClicked;
+    }
+
+    private void OnDisable()
+    {
+        _mouseInput.LeftMouseButtonClicked -= OnLMBClicked;
     }
 
     private void Update()
@@ -52,12 +64,13 @@ public class Builder : MonoBehaviour
         {
             _building.transform.position = hit.point;
 
-            if (Input.GetMouseButtonDown(0))
+            if (_isLMBClicked)
             {
-                if (hit.transform.TryGetComponent(out Plane _))
+                if (_hit.transform.TryGetComponent(out Plane _))
                 {
                     BuildingPlaced?.Invoke(_building);
                     _building = null;
+                    _isLMBClicked = false;
                 }
             }
         }
@@ -78,5 +91,14 @@ public class Builder : MonoBehaviour
                 BuildingPlaced.Invoke(null);
             }
         }
+    }
+
+    private void OnLMBClicked(RaycastHit hit)
+    {
+        if (_building == null)
+            return;
+
+        _hit = hit;
+        _isLMBClicked = true;
     }
 }
