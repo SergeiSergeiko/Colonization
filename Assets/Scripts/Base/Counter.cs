@@ -3,28 +3,28 @@ using System;
 public class Counter
 {
     private int _currentCount = 0;
-    private int _markNumer;
+    private int _targetNumber;
 
     public event Action CountReached;
 
-    public Counter(int markNumber)
+    public Counter(int targetNumber)
     {
-        _markNumer = markNumber;
+        _targetNumber = targetNumber;
     }
 
     public void Count()
     {
         _currentCount++;
 
-        if (_currentCount >= _markNumer)
+        if (_currentCount >= _targetNumber)
         {
             CountReached?.Invoke();
             _currentCount = 0;
         }
     }
 
-    public void SetMarkNumber(int number)
+    public void SetTargetNumber(int targetNumber)
     {
-        _markNumer = number;
+        _targetNumber = targetNumber;
     }
 }
