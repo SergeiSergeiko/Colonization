@@ -23,6 +23,9 @@ public class Bag : MonoBehaviour
         if (resource == null)
             Debug.LogError($"{resource.name} has null");
 
+        if (Resource != null)
+            Debug.LogError("Tries to put a resource, when bag is full");
+
         Resource = resource;
         resource.transform.SetParent(transform);
     }
